@@ -1,0 +1,20 @@
+# this file contains the files and patterns for git to ignore
+build.xml
+build/
+dist/
+manifest.mf
+nbproject/
+
+# the following ignore patterns are java specific
+*.class
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
