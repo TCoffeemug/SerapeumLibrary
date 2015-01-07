@@ -23,23 +23,28 @@ public class LibraryItemTest {
 
     private LibraryItem mItem1;
 
+    private void initializeItem(){
+        mItem1 = new LibraryItem(ITEM_NAME);
+        mItem1.setDescription(DESCRIPTION);
+    }
+    
     @Test
     public void testCreateLibraryItem() {
         mItem1 = new LibraryItem(ITEM_NAME);
         assertTrue("LibraryItem has not the assigned name " + ITEM_NAME, mItem1.getName().equals(ITEM_NAME));
+        assertEquals("LibraryItem has not the expected description","",mItem1.getDescription());
+        assertTrue("LibraryItem is not available",mItem1.isAvailable());
     }
 
     @Test
     public void testAddDescription() {
-        mItem1 = new LibraryItem(ITEM_NAME);
-        mItem1.setDescription(DESCRIPTION);
+        initializeItem();
         assertEquals("Description was not added correctly", DESCRIPTION, mItem1.getDescription());
     }
 
     @Test
     public void testBookToString() {
-        mItem1 = new LibraryItem(ITEM_NAME);
-        mItem1.setDescription(DESCRIPTION);
+        initializeItem();
         String expectedReturnString = ITEM_NAME + ": " + DESCRIPTION;
         assertEquals("Book has not the expected toString representation", expectedReturnString, mItem1.toString());
     }

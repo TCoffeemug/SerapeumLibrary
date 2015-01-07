@@ -16,10 +16,12 @@ public class LibraryItem {
 
     private final String mName;
     private String mDescription;
+    private boolean mAvailable;
 
     LibraryItem(String name) {
         mName = name;
         mDescription = "";
+        mAvailable = true;
     }
 
     String getName() {
@@ -42,6 +44,14 @@ public class LibraryItem {
             returnString.append(mDescription);
         }
         return returnString.toString();
+    }
+    
+    public void setAvailable(boolean value){
+        mAvailable = value;
+    }
+    
+    public boolean isAvailable(){
+        return mAvailable;
     }
 
 }
