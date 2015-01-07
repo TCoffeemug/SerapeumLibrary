@@ -1,6 +1,8 @@
 package de.iceburner.apps.serapeum.lib;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,10 +21,12 @@ public class Library {
 
     private Map<String, LibraryItem> mLibraryItems;
     private Map<String, Person> mPersons;
+    private Map<String, String> mItemToPersonIds;
 
     public Library() {
         mLibraryItems = new HashMap();
         mPersons = new HashMap<>();
+        mItemToPersonIds = new HashMap<>();
     }
 
     private String createKey(String substring) {
@@ -57,14 +61,65 @@ public class Library {
         return mLibraryItems.get(id);
     }
 
-    String addPerson(Person person) {
+    /**
+     * adds a Person to the Library and returns the assigned ID
+     *
+     * @param person - Person - person to add to library
+     * @return String - ID that is connected to the person
+     */
+    public String addPerson(Person person) {
         String key = createKey(person.getName().substring(0, 4));
         mPersons.put(key, person);
         return key;
     }
 
-    Person getPerson(String id) {
+    public Person getPerson(String id) {
         return mPersons.get(id);
     }
 
+    /**
+     * checks out an item to a person if the item is still available
+     *
+     * @param itemId - item in question
+     * @param personId - person in question
+     * @return boolean - true if checkOut was successful, otherwise false
+     */
+    boolean checkOut(String itemId, String personId) {
+        LibraryItem item = mLibraryItems.get(itemId);
+        if (item.isAvailable()) {
+            item.setAvailable(false);
+            mItemToPersonIds.put(itemId, personId);
+            return true;
+        }
+        return false;
+    }
+
+    public String getPersonForItem(String itemId) {
+        return mItemToPersonIds.get(itemId);
+    }
+
+    /**
+     * returns a list of Items borrowed by a person
+     *
+     * @param personId - theID of the person
+     * @return List<String> - a list of itemIDs
+     */
+    public List<String> getItemsForPerson(String personId) {
+        List<String> itemList = new ArrayList<>();
+        for (String itemId : mItemToPersonIds.keySet()) {
+            if (personId.equals(mItemToPersonIds.get(itemId))) {
+                itemList.add(itemId);
+            }
+        }
+        return itemList;
+    }
+
+    boolean checkIn(String itemId) {
+        if (mItemToPersonIds.containsKey(itemId)) {
+            mItemToPersonIds.remove(itemId);
+            mLibraryItems.get(itemId).setAvailable(true);
+            return true;
+        }
+        return false;
+    }
 }

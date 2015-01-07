@@ -43,15 +43,15 @@ public class Person {
     public String getPhone() {
         return mPhone;
     }
-    
+
     @Override
-    public String toString(){
+    public String toString() {
         StringBuilder returnString = new StringBuilder(mName);
-        if (!mEmail.equals("")){
+        if (!mEmail.equals("")) {
             returnString.append(", email: ");
             returnString.append(mEmail);
         }
-        if (!mPhone.equals("")){
+        if (!mPhone.equals("")) {
             returnString.append(", phone: ");
             returnString.append(mPhone);
         }

@@ -71,6 +71,7 @@ public class LibraryTest {
         for (String id : mItemIdList) {
             assertTrue("Item with id " + id + " could not be found in Library", mItemList.contains(mLibrary.getItem(id)));
         }
+        mItemIdList.clear();
     }
 
     @Test
@@ -80,6 +81,44 @@ public class LibraryTest {
         for (String id : mPersonIdList) {
             assertTrue("Person with id " + id + " could not be found in Library", mPersonList.contains(mLibrary.getPerson(id)));
         }
+        mPersonIdList.clear();
+    }
+
+    @Test
+    public void testCheckOut() {
+        initializeLibrary();
+        initializePeople();
+        String itemId = mItemIdList.get(0);
+        String personId = mPersonIdList.get(0);
+        assertTrue("Item could not be checked out", mLibrary.checkOut(itemId, personId));
+        assertFalse("Item is still available", mLibrary.getItem(itemId).isAvailable());
+        assertEquals("Item has no or wrong person linked", personId, mLibrary.getPersonForItem(itemId));
+        assertTrue("Person does not have the right book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        //rule out double checkout
+        assertFalse("Item could be lent twice", mLibrary.checkOut(itemId, personId));
+        personId = mPersonIdList.get(1);
+        assertFalse("Item could be lent twice", mLibrary.checkOut(itemId, personId));
+        assertFalse("Item has no or wrong person linked", personId.equals(mLibrary.getPersonForItem(itemId)));
+        assertFalse("Person does not have the right book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        mItemIdList.clear();
+        mPersonIdList.clear();
+    }
+
+    @Test
+    public void testCheckIn() {
+        initializeLibrary();
+        initializePeople();
+        String itemId = mItemIdList.get(0);
+        String personId = mPersonIdList.get(0);
+        mLibrary.checkOut(itemId, personId);
+        mLibrary.checkOut(mItemIdList.get(1), personId);
+        assertTrue("Item could not be checked in", mLibrary.checkIn(itemId));
+        assertTrue("Item is not available", mLibrary.getItem(itemId).isAvailable());
+        assertFalse("Person still has the book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        assertFalse("Item could be checked in", mLibrary.checkIn(itemId));
+        assertTrue("Item could not be checked out", mLibrary.checkOut(itemId, mPersonIdList.get(0)));
+        mItemIdList.clear();
+        mPersonIdList.clear();
     }
 
 }

@@ -45,13 +45,12 @@ public class LibraryItem {
         }
         return returnString.toString();
     }
-    
-    public void setAvailable(boolean value){
+
+    public void setAvailable(boolean value) {
         mAvailable = value;
     }
-    
-    public boolean isAvailable(){
+
+    public boolean isAvailable() {
         return mAvailable;
     }
-
 }

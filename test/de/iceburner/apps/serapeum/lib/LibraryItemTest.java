@@ -23,17 +23,17 @@ public class LibraryItemTest {
 
     private LibraryItem mItem1;
 
-    private void initializeItem(){
+    private void initializeItem() {
         mItem1 = new LibraryItem(ITEM_NAME);
         mItem1.setDescription(DESCRIPTION);
     }
-    
+
     @Test
     public void testCreateLibraryItem() {
         mItem1 = new LibraryItem(ITEM_NAME);
         assertTrue("LibraryItem has not the assigned name " + ITEM_NAME, mItem1.getName().equals(ITEM_NAME));
-        assertEquals("LibraryItem has not the expected description","",mItem1.getDescription());
-        assertTrue("LibraryItem is not available",mItem1.isAvailable());
+        assertEquals("LibraryItem has not the expected description", "", mItem1.getDescription());
+        assertTrue("LibraryItem is not available", mItem1.isAvailable());
     }
 
     @Test
