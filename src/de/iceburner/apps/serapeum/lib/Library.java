@@ -18,9 +18,11 @@ import java.util.Map;
 public class Library {
 
     private Map<String, LibraryItem> mLibraryItems;
+    private Map<String, Person> mPersons;
 
     public Library() {
         mLibraryItems = new HashMap();
+        mPersons = new HashMap<>();
     }
 
     private String createKey(String substring) {
@@ -53,6 +55,16 @@ public class Library {
 
     public LibraryItem getItem(String id) {
         return mLibraryItems.get(id);
+    }
+
+    String addPerson(Person person) {
+        String key = createKey(person.getName().substring(0, 4));
+        mPersons.put(key, person);
+        return key;
+    }
+
+    Person getPerson(String id) {
+        return mPersons.get(id);
     }
 
 }
