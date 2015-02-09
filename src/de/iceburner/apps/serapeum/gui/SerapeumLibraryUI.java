@@ -1,5 +1,8 @@
 package de.iceburner.apps.serapeum.gui;
 
+import de.iceburner.apps.serapeum.lib.Library;
+import javax.swing.DefaultListModel;
+
 /**
  * main GUI class
  *
@@ -13,12 +16,16 @@ package de.iceburner.apps.serapeum.gui;
  * @author ethssce - 2015-01-04 - Initial version
  */
 public class SerapeumLibraryUI extends javax.swing.JFrame {
+    
+    private Library mLibrary;
 
     /**
      * Creates new form SerapeumLibraryUI
      */
     public SerapeumLibraryUI() {
         initComponents();
+        defaultModel.addElement("Welcome to the Serapeum Library!");
+        defaultModel.addElement("Please select new or open from the menu to start!");
     }
 
     /**
@@ -30,8 +37,23 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        libraryOverviewPanel = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        libraryOverviewList = new javax.swing.JList();
+        updateViewButton = new javax.swing.JButton();
+        checkOutInButton = new javax.swing.JButton();
+        viewComboBox = new javax.swing.JComboBox();
+        libraryAdministrationPanel = new javax.swing.JPanel();
+        actionComboBox = new javax.swing.JComboBox();
+        objectComboBox = new javax.swing.JComboBox();
+        itemComboBox = new javax.swing.JComboBox();
+        nameTextField = new javax.swing.JTextField();
+        info1TextField = new javax.swing.JTextField();
+        info2TextField = new javax.swing.JTextField();
+        performActionButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
+        newMenuItem = new javax.swing.JMenuItem();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
         saveAsMenuItem = new javax.swing.JMenuItem();
@@ -47,20 +69,163 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        libraryOverviewPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Library Overview", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12))); // NOI18N
+
+        libraryOverviewList.setModel(defaultModel);
+        libraryOverviewList.setEnabled(false);
+        jScrollPane1.setViewportView(libraryOverviewList);
+
+        updateViewButton.setText("update view");
+        updateViewButton.setEnabled(false);
+        updateViewButton.setName(""); // NOI18N
+
+        checkOutInButton.setText("check-out / return");
+        checkOutInButton.setEnabled(false);
+
+        viewComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "show all items", "show only available items", "show unavailable items" }));
+        viewComboBox.setEnabled(false);
+
+        javax.swing.GroupLayout libraryOverviewPanelLayout = new javax.swing.GroupLayout(libraryOverviewPanel);
+        libraryOverviewPanel.setLayout(libraryOverviewPanelLayout);
+        libraryOverviewPanelLayout.setHorizontalGroup(
+            libraryOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(libraryOverviewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(libraryOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1)
+                    .addGroup(libraryOverviewPanelLayout.createSequentialGroup()
+                        .addComponent(updateViewButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(checkOutInButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(viewComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
+        libraryOverviewPanelLayout.setVerticalGroup(
+            libraryOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(libraryOverviewPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
+                .addGroup(libraryOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(updateViewButton)
+                    .addComponent(checkOutInButton)
+                    .addComponent(viewComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+
+        libraryAdministrationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Library Administration", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Arial", 1, 12))); // NOI18N
+
+        actionComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "add", "delete" }));
+        actionComboBox.setEnabled(false);
+
+        objectComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "item", "person" }));
+        objectComboBox.setEnabled(false);
+        objectComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                objectComboBoxActionPerformed(evt);
+            }
+        });
+
+        itemComboBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "book", "movie", "other" }));
+        itemComboBox.setEnabled(false);
+        itemComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                itemComboBoxActionPerformed(evt);
+            }
+        });
+
+        nameTextField.setText("name");
+        nameTextField.setEnabled(false);
+
+        info1TextField.setText("year");
+        info1TextField.setEnabled(false);
+        info1TextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                info1TextFieldActionPerformed(evt);
+            }
+        });
+
+        info2TextField.setText("description");
+        info2TextField.setEnabled(false);
+
+        performActionButton.setText("execute chosen action");
+        performActionButton.setEnabled(false);
+
+        javax.swing.GroupLayout libraryAdministrationPanelLayout = new javax.swing.GroupLayout(libraryAdministrationPanel);
+        libraryAdministrationPanel.setLayout(libraryAdministrationPanelLayout);
+        libraryAdministrationPanelLayout.setHorizontalGroup(
+            libraryAdministrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(libraryAdministrationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(libraryAdministrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, libraryAdministrationPanelLayout.createSequentialGroup()
+                        .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(objectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(performActionButton, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(info1TextField)
+                    .addComponent(info2TextField)
+                    .addComponent(nameTextField))
+                .addContainerGap())
+        );
+        libraryAdministrationPanelLayout.setVerticalGroup(
+            libraryAdministrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(libraryAdministrationPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(libraryAdministrationPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(actionComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(objectComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(itemComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(performActionButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(nameTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(info1TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(info2TextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
+        newMenuItem.setText("New");
+        newMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                newMenuItemActionPerformed(evt);
+            }
+        });
+        fileMenu.add(newMenuItem);
+
         openMenuItem.setMnemonic('o');
         openMenuItem.setText("Open");
+        openMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                openMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(openMenuItem);
 
         saveMenuItem.setMnemonic('s');
         saveMenuItem.setText("Save");
+        saveMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveMenuItem);
 
         saveAsMenuItem.setMnemonic('a');
         saveAsMenuItem.setText("Save As ...");
         saveAsMenuItem.setDisplayedMnemonicIndex(5);
+        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                saveAsMenuItemActionPerformed(evt);
+            }
+        });
         fileMenu.add(saveAsMenuItem);
 
         exitMenuItem.setMnemonic('x');
@@ -114,11 +279,21 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(libraryOverviewPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(libraryAdministrationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 279, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(libraryOverviewPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(libraryAdministrationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
@@ -128,6 +303,46 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
+    private void newMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newMenuItemActionPerformed
+        mLibrary = new Library();
+        enableGuiElements();
+        defaultModel.removeAllElements();
+        defaultModel.addElement("This library is empty, please add an item!");
+    }//GEN-LAST:event_newMenuItemActionPerformed
+
+    private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
+        throw new UnsupportedOperationException("Not supported yet.");
+    }//GEN-LAST:event_saveMenuItemActionPerformed
+
+    private void info1TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info1TextFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_info1TextFieldActionPerformed
+
+    private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        enableGuiElements();
+        throw new UnsupportedOperationException("Not fully supported yet.");
+    }//GEN-LAST:event_openMenuItemActionPerformed
+
+    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
+        throw new UnsupportedOperationException("Not supported yet.");
+    }//GEN-LAST:event_saveAsMenuItemActionPerformed
+
+    private void objectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectComboBoxActionPerformed
+
+        if (objectComboBox.getSelectedItem().equals("item")){
+            itemComboBox.setEnabled(true);
+            itemComboBoxAction();
+        }
+        if (objectComboBox.getSelectedItem().equals("person")){
+            itemComboBox.setEnabled(false);
+            setInfoTextBoxes("Full name", "Email", "Phone number");
+        }
+    }//GEN-LAST:event_objectComboBoxActionPerformed
+
+    private void itemComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemComboBoxActionPerformed
+        itemComboBoxAction();
+    }//GEN-LAST:event_itemComboBoxActionPerformed
+    
     /**
      * @param args the command line arguments
      */
@@ -165,6 +380,8 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JComboBox actionComboBox;
+    private javax.swing.JButton checkOutInButton;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
     private javax.swing.JMenuItem cutMenuItem;
@@ -173,11 +390,58 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JTextField info1TextField;
+    private javax.swing.JTextField info2TextField;
+    private javax.swing.JComboBox itemComboBox;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPanel libraryAdministrationPanel;
+    private javax.swing.JList libraryOverviewList;
+    private javax.swing.JPanel libraryOverviewPanel;
     private javax.swing.JMenuBar menuBar;
+    private javax.swing.JTextField nameTextField;
+    private javax.swing.JMenuItem newMenuItem;
+    private javax.swing.JComboBox objectComboBox;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
+    private javax.swing.JButton performActionButton;
     private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
+    private javax.swing.JButton updateViewButton;
+    private javax.swing.JComboBox viewComboBox;
     // End of variables declaration//GEN-END:variables
+    private DefaultListModel<String> defaultModel = new DefaultListModel<String>();
+    
+    private void enableGuiElements() {
+        libraryOverviewList.setEnabled(true);
+        updateViewButton.setEnabled(true);
+        checkOutInButton.setEnabled(true);
+        viewComboBox.setEnabled(true);
+        actionComboBox.setEnabled(true);
+        objectComboBox.setEnabled(true);
+        itemComboBox.setEnabled(true);
+        nameTextField.setEnabled(true);
+        info1TextField.setEnabled(true);
+        info2TextField.setEnabled(true);
+        performActionButton.setEnabled(true);
+    }
+
+    private void itemComboBoxAction() {
+        if (itemComboBox.getSelectedItem().equals("book")){
+            setInfoTextBoxes("Book name","Author","Description");
+        }
+        if (itemComboBox.getSelectedItem().equals("movie")){
+            setInfoTextBoxes("Movie name","Year","Description");
+        }
+        if (itemComboBox.getSelectedItem().equals("other")){
+            setInfoTextBoxes("Item name","Description","Even more description");
+        }
+        
+    }
+
+    private void setInfoTextBoxes(String name, String info1, String info2) {
+        nameTextField.setText(name);
+        info1TextField.setText(info1);
+        info2TextField.setText(info2);
+    }
 
 }

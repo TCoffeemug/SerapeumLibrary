@@ -102,7 +102,7 @@ public class Library {
      * returns a list of Items borrowed by a person
      *
      * @param personId - theID of the person
-     * @return List<String> - a list of itemIDs
+     * @return List - a list of itemIDs
      */
     public List<String> getItemsForPerson(String personId) {
         List<String> itemList = new ArrayList<>();

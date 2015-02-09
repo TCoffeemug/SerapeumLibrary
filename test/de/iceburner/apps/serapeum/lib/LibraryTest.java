@@ -45,6 +45,9 @@ public class LibraryTest {
         mItemList.add(LibraryItemFactory.createItem(MOVIE_NAME, String.valueOf(YEAR), LibraryItemFactory.ItemType.MOVIE));
         mItemList.add(LibraryItemFactory.createItem(MOVIE_NAME + " 2", String.valueOf(YEAR + 7), LibraryItemFactory.ItemType.MOVIE));
         mItemList.add(LibraryItemFactory.createItem(ITEM_NAME, ITEM_DESCRIPTION, LibraryItemFactory.ItemType.OTHER));
+        for (LibraryItem item : mItemList){
+            System.out.println(item.toString());
+        }
         mItemIdList = new ArrayList<>();
         mPersonList = new ArrayList<>();
         mPersonList.add(new Person(PERSON_NAME1));
