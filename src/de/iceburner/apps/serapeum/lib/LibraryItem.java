@@ -28,7 +28,7 @@ public class LibraryItem {
         return mName;
     }
 
-    void setDescription(String description) {
+    public void setDescription(String description) {
         mDescription = description;
     }
 
