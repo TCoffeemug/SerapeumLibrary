@@ -26,6 +26,7 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private Library mLibrary;
     private static final String PLEASE_ENTER = "Please enter %s here";
     private static final String INVALID_NAME = "Invalid name!";
+    private static final String INVALID_ID = "Invalid ID!";
     private static final String INIT_STRING_PERSON_LIST = "Please add a person";
     private static final String INIT_STRING_LIBRARY_LIST = "This library is empty, please add an item!";
     private static final String NOT_SUPPORTED_MESSAGE = "Not fully supported yet.";
@@ -493,16 +494,16 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
                                     break;
                                 case OTHER:
                                     if(isTextFieldSet(info2TextField.getText())){
-                                        info = info + info2TextField.getText();
+                                        info = info + " | " + info2TextField.getText();
                                     }
                                     libItem = LibraryItemFactory.createItem(nameTextField.getText(), info, LibraryItemFactory.ItemType.OTHER);
                                     break;
                             }
-                            mLibrary.addItem(libItem);
+                            String id = mLibrary.addItem(libItem);
                             if (itemModel.get(0).contains(INIT_STRING_LIBRARY_LIST)){
                                 itemModel.removeAllElements();
                             }
-                            itemModel.addElement(libItem.toString());
+                            itemModel.addElement("<ID:"+ id +"> "+libItem.toString());
                         }else {
                             infoBox(INVALID_NAME,INVALID_NAME);
                         }
@@ -516,11 +517,11 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
                             if (isTextFieldSet(info2TextField.getText())) {
                                 person.setPhone(info2TextField.getText());
                             }
-                            mLibrary.addPerson(person);
+                            String id = mLibrary.addPerson(person);
                             if (personModel.get(0).contains(INIT_STRING_PERSON_LIST)){
                                 personModel.removeAllElements();
                             }
-                            personModel.addElement(person.toString());
+                            personModel.addElement("<ID:"+ id +"> "+person.toString());
                         } else {
                             infoBox(INVALID_NAME,INVALID_NAME);
                         }
@@ -528,7 +529,25 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
                 }
                 break;
             case DELETE:
-                errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+                switch ((Object)objectComboBox.getSelectedItem()){
+                    case ITEM:
+                        LibraryItem item = mLibrary.getItem(nameTextField.getText());
+                        if (item!=null){
+                            errorBox(NOT_SUPPORTED_MESSAGE+": library cannot delete items yet.", NOT_SUPPORTED_MESSAGE);
+                        } else {
+                            infoBox(INVALID_ID,INVALID_ID);
+                        }
+                        break;
+                    case PERSON:
+                        Person person = mLibrary.getPerson(nameTextField.getText());
+                        if (person!=null){
+                            errorBox(NOT_SUPPORTED_MESSAGE+": library cannot delete persons yet.", NOT_SUPPORTED_MESSAGE);
+                        } else {
+                            infoBox(INVALID_ID,INVALID_ID);
+                        }
+                        break;
+                }
+                
         }
     }//GEN-LAST:event_performActionButtonActionPerformed
 
