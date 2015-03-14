@@ -186,7 +186,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="checkOutInButton" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                          <Component id="viewComboBox" pref="442" max="32767" attributes="0"/>
+                          <Component id="viewComboBox" pref="448" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -236,7 +236,8 @@
         </Container>
         <Component class="javax.swing.JButton" name="updateViewButton">
           <Properties>
-            <Property name="text" type="java.lang.String" value="update view"/>
+            <Property name="text" type="java.lang.String" value="deselect all"/>
+            <Property name="toolTipText" type="java.lang.String" value=""/>
             <Property name="enabled" type="boolean" value="false"/>
             <Property name="name" type="java.lang.String" value="" noResource="true"/>
           </Properties>

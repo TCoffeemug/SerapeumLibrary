@@ -29,10 +29,10 @@ public class Library {
         mItemToPersonIds = new HashMap<>();
     }
 
-    private String createKey(String substring) {
+    private String createKey(String substring, Map map) {
         String key = substring + "001";
         int i = 1;
-        while (mLibraryItems.containsKey(key)) {
+        while (map.containsKey(key)) {
             i++;
             if (i < 10) {
                 key = substring + "00" + i;
@@ -52,11 +52,16 @@ public class Library {
      * @return String - ID that is connected to the item
      */
     public String addItem(LibraryItem item) {
-        String key = createKey(item.getName().substring(0, 4));
+        String key = createKey(item.getName().substring(0, 4), mLibraryItems);
         mLibraryItems.put(key, item);
         return key;
     }
 
+    /**
+     * 
+     * @param id
+     * @return LibraryItem - the item with the id
+     */
     public LibraryItem getItem(String id) {
         return mLibraryItems.get(id);
     }
@@ -68,11 +73,16 @@ public class Library {
      * @return String - ID that is connected to the person
      */
     public String addPerson(Person person) {
-        String key = createKey(person.getName().substring(0, 4));
+        String key = createKey(person.getName().substring(0, 4), mPersons);
         mPersons.put(key, person);
         return key;
     }
 
+    /**
+     * 
+     * @param id
+     * @return Person - person of the id
+     */
     public Person getPerson(String id) {
         return mPersons.get(id);
     }
@@ -84,7 +94,7 @@ public class Library {
      * @param personId - person in question
      * @return boolean - true if checkOut was successful, otherwise false
      */
-    boolean checkOut(String itemId, String personId) {
+    public boolean checkOut(String itemId, String personId) {
         LibraryItem item = mLibraryItems.get(itemId);
         if (item.isAvailable()) {
             item.setAvailable(false);
@@ -94,7 +104,12 @@ public class Library {
         return false;
     }
 
-    public String getPersonForItem(String itemId) {
+    /**
+     * 
+     * @param itemId
+     * @return String - ID of the person connected to the item
+     */
+    public String getPersonIdForItem(String itemId) {
         return mItemToPersonIds.get(itemId);
     }
 
@@ -104,7 +119,7 @@ public class Library {
      * @param personId - theID of the person
      * @return List - a list of itemIDs
      */
-    public List<String> getItemsForPerson(String personId) {
+    public List<String> getItemIdsForPerson(String personId) {
         List<String> itemList = new ArrayList<>();
         for (String itemId : mItemToPersonIds.keySet()) {
             if (personId.equals(mItemToPersonIds.get(itemId))) {
@@ -114,12 +129,45 @@ public class Library {
         return itemList;
     }
 
-    boolean checkIn(String itemId) {
+    /**
+     * 
+     * @param itemId
+     * @return 
+     */
+    public boolean checkIn(String itemId) {
         if (mItemToPersonIds.containsKey(itemId)) {
             mItemToPersonIds.remove(itemId);
             mLibraryItems.get(itemId).setAvailable(true);
             return true;
         }
         return false;
+    }
+
+    /**
+     * removes the item with given id from the library. Note that method will
+     * not check availability
+     *
+     * @param id - id of the item to remove
+     */
+    public void deleteItem(String id) {
+        mLibraryItems.remove(id);
+    }
+
+    /**
+     * 
+     * @param id 
+     */
+    public void deletePerson(String id) {
+        mPersons.remove(id);
+    }
+
+    /**
+     * 
+     * @return List<String> - a list of all item IDs
+     */
+    public List<String> getAllItemIds() {
+        List<String> itemIds = new ArrayList();
+        itemIds.addAll(mLibraryItems.keySet());
+        return itemIds;
     }
 }

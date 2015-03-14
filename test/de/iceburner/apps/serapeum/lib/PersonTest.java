@@ -2,6 +2,7 @@ package de.iceburner.apps.serapeum.lib;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 /**
  * Unit Test for Person class
@@ -27,6 +28,7 @@ public class PersonTest {
     public void testCreatePerson() {
         mPerson = new Person(NAME);
         assertEquals("Person was created with the wrong name", NAME, mPerson.getName());
+        assertFalse("Person has items when he should not have", mPerson.hasItems());
     }
 
     @Test

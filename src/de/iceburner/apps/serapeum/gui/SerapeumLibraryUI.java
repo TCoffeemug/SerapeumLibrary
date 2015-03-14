@@ -4,6 +4,7 @@ import de.iceburner.apps.serapeum.lib.Library;
 import de.iceburner.apps.serapeum.lib.LibraryItem;
 import de.iceburner.apps.serapeum.lib.LibraryItemFactory;
 import de.iceburner.apps.serapeum.lib.Person;
+import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
@@ -148,7 +149,8 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
         libraryOverviewList.setEnabled(false);
         jScrollPane1.setViewportView(libraryOverviewList);
 
-        updateViewButton.setText("update view");
+        updateViewButton.setText("deselect all");
+        updateViewButton.setToolTipText("");
         updateViewButton.setEnabled(false);
         updateViewButton.setName(""); // NOI18N
         updateViewButton.addActionListener(new java.awt.event.ActionListener() {
@@ -195,7 +197,7 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(checkOutInButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(viewComboBox, 0, 442, Short.MAX_VALUE))))
+                        .addComponent(viewComboBox, 0, 448, Short.MAX_VALUE))))
         );
         libraryOverviewPanelLayout.setVerticalGroup(
             libraryOverviewPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -529,19 +531,52 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
                 }
                 break;
             case DELETE:
+                String id = nameTextField.getText();
                 switch ((Object)objectComboBox.getSelectedItem()){
                     case ITEM:
-                        LibraryItem item = mLibrary.getItem(nameTextField.getText());
+                        LibraryItem item = mLibrary.getItem(id);
                         if (item!=null){
-                            errorBox(NOT_SUPPORTED_MESSAGE+": library cannot delete items yet.", NOT_SUPPORTED_MESSAGE);
+                            if (item.isAvailable()){
+                                itemModel.removeElement("<ID:"+ id +"> "+item.toString());
+                                mLibrary.deleteItem(id);                                
+                            } else {
+                                String message ="Item is not available and might still be checked out to some person. Do you want to delete it anyway?";
+                                String title="Deletion Warning";
+                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION){
+                                    itemModel.removeElement("<ID:"+ id +"> "+item.toString());
+                                    mLibrary.checkIn(id);
+                                    mLibrary.deleteItem(id);   
+                                }
+                            }
                         } else {
                             infoBox(INVALID_ID,INVALID_ID);
                         }
                         break;
                     case PERSON:
-                        Person person = mLibrary.getPerson(nameTextField.getText());
+                        Person person = mLibrary.getPerson(id);
                         if (person!=null){
-                            errorBox(NOT_SUPPORTED_MESSAGE+": library cannot delete persons yet.", NOT_SUPPORTED_MESSAGE);
+                            if (person.hasItems()){
+                                String message ="Person still has items. Do you want to delete him anyway?";
+                                String title="Deletion Warning";
+                                int reply = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
+                                if (reply == JOptionPane.YES_OPTION){
+                                    message = "The following item is still checked out to person "+person.getName()+". Do you want to check in the item? Item ID: ";
+                                    title = "Action required";
+                                    List<String> itemIdList = mLibrary.getItemIdsForPerson(id);
+                                    for (String itemId : itemIdList){
+                                        reply = JOptionPane.showConfirmDialog(null, message+itemId, title, JOptionPane.YES_NO_OPTION);
+                                        if (reply == JOptionPane.YES_OPTION){
+                                            mLibrary.checkIn(itemId);
+                                        } 
+                                    }
+                                    personModel.removeElement("<ID:"+ id +"> "+person.toString());
+                                    mLibrary.deletePerson(id);   
+                                }                          
+                            } else {
+                                personModel.removeElement("<ID:"+ id +"> "+person.toString());
+                                mLibrary.deletePerson(id);      
+                            }
                         } else {
                             infoBox(INVALID_ID,INVALID_ID);
                         }
@@ -552,15 +587,69 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_performActionButtonActionPerformed
 
     private void updateViewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateViewButtonActionPerformed
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+        libraryOverviewList.clearSelection();
+        personOverviewList.clearSelection();
     }//GEN-LAST:event_updateViewButtonActionPerformed
 
     private void checkOutInButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkOutInButtonActionPerformed
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+        String selectedItem = (String)libraryOverviewList.getSelectedValue();
+        String selectedPerson = (String)personOverviewList.getSelectedValue();
+        if (null==selectedItem && null==selectedPerson){
+            infoBox("You have nothing selected for check-out/check-in. Please selected item (and person) from list.", "Nothing Selected");
+        } else if (null==selectedPerson){
+            // just item is selected. Assumption: user want to check item in again.
+            String itemId = parseId(selectedItem);
+            if (mLibrary.getItem(itemId).isAvailable()){
+                infoBox("You try to check-in an item that is already checked in. Did you want to check it out to a person? Please select a person from the list if so.", "check-in aborted");
+            } else {
+                mLibrary.checkIn(itemId);
+                infoBox("Checked in item with ID "+itemId,"Check-in successful");
+            }
+        } else {
+            //item and person are selected. Assumption: user want to check out item to person.
+            String itemId = parseId(selectedItem);
+            String personId = parseId(selectedPerson);
+            if (mLibrary.getItem(itemId).isAvailable()){
+                mLibrary.checkOut(itemId, personId);
+                infoBox("Checked out item with ID "+itemId+" to person with ID "+personId,"Check-out successful");
+            } else {
+                infoBox("You try to check-out an item that is already checked out.", "Check-out aborted");
+            }
+        }      
+        libraryOverviewList.clearSelection();
+        personOverviewList.clearSelection();
     }//GEN-LAST:event_checkOutInButtonActionPerformed
 
     private void viewComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_viewComboBoxActionPerformed
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+        List<String> itemIdList = mLibrary.getAllItemIds();
+        itemModel.clear();
+        if (viewComboBox.getSelectedItem().equals("show all items in library")){
+            for (String itemID : itemIdList){
+                itemModel.addElement("<ID:"+ itemID +"> "+mLibrary.getItem(itemID).toString());
+            }
+        } else if (viewComboBox.getSelectedItem().equals("show only available items in library")) {
+            for (String itemID : itemIdList){
+                if (mLibrary.getItem(itemID).isAvailable()){
+                    itemModel.addElement("<ID:"+ itemID +"> "+mLibrary.getItem(itemID).toString());                    
+                }                
+            }
+        } else if (viewComboBox.getSelectedItem().equals("show unavailable items in library")) {
+            for (String itemID : itemIdList){
+                if (!mLibrary.getItem(itemID).isAvailable()){
+                    itemModel.addElement("<ID:"+ itemID +"> "+mLibrary.getItem(itemID).toString());                    
+                }                
+            }
+        } else if (viewComboBox.getSelectedItem().equals("show items of person")) {
+            String selectedPerson = (String)personOverviewList.getSelectedValue();
+            if (selectedPerson!=null){
+                itemIdList = mLibrary.getItemIdsForPerson(parseId(selectedPerson));
+                for (String itemID : itemIdList){
+                    itemModel.addElement("<ID:"+ itemID +"> "+mLibrary.getItem(itemID).toString());
+                }
+            }else{
+                infoBox("You have to select a person in order to show the item he has.", "No Person selected");
+            }
+        }
     }//GEN-LAST:event_viewComboBoxActionPerformed
     
     /**
@@ -679,6 +768,10 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private static void errorBox(String errorMessage, String titleBar)
     {
         JOptionPane.showMessageDialog(null, errorMessage, "ErrorBox: " + titleBar, JOptionPane.ERROR_MESSAGE);
+    }
+    
+    private String parseId(String object){
+        return object.substring(4, 11);
     }
     
 }

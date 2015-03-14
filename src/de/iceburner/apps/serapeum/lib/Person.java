@@ -17,11 +17,13 @@ public class Person {
     private final String mName;
     private String mEmail;
     private String mPhone;
+    private boolean mHasItems;
 
     public Person(String name) {
         mName = name;
         mEmail = "";
         mPhone = "";
+        mHasItems = false;
     }
 
     public void setMail(String mail) {
@@ -56,5 +58,13 @@ public class Person {
             returnString.append(mPhone);
         }
         return returnString.toString();
+    }
+    
+    public void setHasItems(boolean value) {
+        mHasItems = value;
+    }
+
+    public boolean hasItems() {
+        return mHasItems;
     }
 }
