@@ -95,14 +95,14 @@ public class LibraryTest {
         String personId = mPersonIdList.get(0);
         assertTrue("Item could not be checked out", mLibrary.checkOut(itemId, personId));
         assertFalse("Item is still available", mLibrary.getItem(itemId).isAvailable());
-        assertEquals("Item has no or wrong person linked", personId, mLibrary.getPersonForItem(itemId));
-        assertTrue("Person does not have the right book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        assertEquals("Item has no or wrong person linked", personId, mLibrary.getPersonIdForItem(itemId));
+        assertTrue("Person does not have the right book", mLibrary.getItemIdsForPerson(personId).contains(itemId));
         //rule out double checkout
         assertFalse("Item could be lent twice", mLibrary.checkOut(itemId, personId));
         personId = mPersonIdList.get(1);
         assertFalse("Item could be lent twice", mLibrary.checkOut(itemId, personId));
-        assertFalse("Item has no or wrong person linked", personId.equals(mLibrary.getPersonForItem(itemId)));
-        assertFalse("Person does not have the right book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        assertFalse("Item has no or wrong person linked", personId.equals(mLibrary.getPersonIdForItem(itemId)));
+        assertFalse("Person does not have the right book", mLibrary.getItemIdsForPerson(personId).contains(itemId));
         mItemIdList.clear();
         mPersonIdList.clear();
     }
@@ -117,7 +117,7 @@ public class LibraryTest {
         mLibrary.checkOut(mItemIdList.get(1), personId);
         assertTrue("Item could not be checked in", mLibrary.checkIn(itemId));
         assertTrue("Item is not available", mLibrary.getItem(itemId).isAvailable());
-        assertFalse("Person still has the book", mLibrary.getItemsForPerson(personId).contains(itemId));
+        assertFalse("Person still has the book", mLibrary.getItemIdsForPerson(personId).contains(itemId));
         assertFalse("Item could be checked in", mLibrary.checkIn(itemId));
         assertTrue("Item could not be checked out", mLibrary.checkOut(itemId, mPersonIdList.get(0)));
         mItemIdList.clear();

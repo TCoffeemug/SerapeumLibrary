@@ -4,10 +4,15 @@ import de.iceburner.apps.serapeum.lib.Library;
 import de.iceburner.apps.serapeum.lib.LibraryItem;
 import de.iceburner.apps.serapeum.lib.LibraryItemFactory;
 import de.iceburner.apps.serapeum.lib.Person;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 /**
@@ -129,7 +134,6 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
         newMenuItem = new javax.swing.JMenuItem();
         openMenuItem = new javax.swing.JMenuItem();
         saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         cutMenuItem = new javax.swing.JMenuItem();
@@ -329,16 +333,6 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
         });
         fileMenu.add(saveMenuItem);
 
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        saveAsMenuItem.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                saveAsMenuItemActionPerformed(evt);
-            }
-        });
-        fileMenu.add(saveAsMenuItem);
-
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
         exitMenuItem.addActionListener(new java.awt.event.ActionListener() {
@@ -424,7 +418,22 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_newMenuItemActionPerformed
 
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+        JFileChooser fileChooser = new JFileChooser(new File("e:\\Dokumente\\NetBeansProjects\\"));
+        fileChooser.setDialogTitle("Save your library in a File");
+        fileChooser.setFileFilter(new FileTypeFilter(".xml","XML File"));
+        int result = fileChooser.showSaveDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION){
+            File saveFile = fileChooser.getSelectedFile();
+            try{
+                FileWriter fileWriter = new FileWriter(saveFile.getPath());
+                String content = "test";
+                fileWriter.write(content);
+                fileWriter.flush();
+                fileWriter.close();
+            }catch(Exception ex){
+                errorBox(ex.getMessage(), "Ooops... an Exception Occurred!");
+            }
+        }
     }//GEN-LAST:event_saveMenuItemActionPerformed
 
     private void info1TextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_info1TextFieldActionPerformed
@@ -432,13 +441,26 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_info1TextFieldActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
-        enableGuiElements();
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
+        JFileChooser fileChooser = new JFileChooser(new File("e:\\Dokumente\\NetBeansProjects\\"));
+        fileChooser.setDialogTitle("Open an existing library");
+        fileChooser.setFileFilter(new FileTypeFilter(".xml","XML File"));
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION){
+            try{
+                File openFile = fileChooser.getSelectedFile();
+                BufferedReader br = new BufferedReader(new FileReader(openFile.getPath()));
+                String s = "";
+                while ((s = br.readLine()) != null){
+                    System.out.println(s);
+                }
+                if (br!=null){
+                    br.close();
+                }
+            }catch(Exception ex){
+                errorBox(ex.getMessage(), "Ooops... an Exception Occurred!");
+            }
+        }
     }//GEN-LAST:event_openMenuItemActionPerformed
-
-    private void saveAsMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveAsMenuItemActionPerformed
-        errorBox(NOT_SUPPORTED_MESSAGE, NOT_SUPPORTED_MESSAGE);
-    }//GEN-LAST:event_saveAsMenuItemActionPerformed
 
     private void objectComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_objectComboBoxActionPerformed
         if (actionComboBox.getSelectedItem().equals(Action.DELETE)){
@@ -715,7 +737,6 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem pasteMenuItem;
     private javax.swing.JButton performActionButton;
     private javax.swing.JList personOverviewList;
-    private javax.swing.JMenuItem saveAsMenuItem;
     private javax.swing.JMenuItem saveMenuItem;
     private javax.swing.JButton updateViewButton;
     private javax.swing.JComboBox viewComboBox;
