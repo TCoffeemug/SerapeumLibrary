@@ -6,8 +6,11 @@ import de.iceburner.apps.serapeum.lib.LibraryItemFactory;
 import de.iceburner.apps.serapeum.lib.Person;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -36,7 +39,9 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private static final String INIT_STRING_PERSON_LIST = "Please add a person";
     private static final String INIT_STRING_LIBRARY_LIST = "This library is empty, please add an item!";
     private static final String NOT_SUPPORTED_MESSAGE = "Not fully supported yet.";
-
+    private static final String PERSON_SAVE_FORMAT = "PersonID, Name, Email, Phone";
+    private static final String ITEM_SAVE_FORMAT = "Type, ID, >>> String Representation of Item <<<, ConnectedPersonID";
+            
     private boolean isTextFieldSet(String text) {
         if(text.contains(PLEASE_ENTER.substring(0, 10))||text.equals("")){
             return false;
@@ -420,15 +425,34 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     private void saveMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_saveMenuItemActionPerformed
         JFileChooser fileChooser = new JFileChooser(new File("e:\\Dokumente\\NetBeansProjects\\"));
         fileChooser.setDialogTitle("Save your library in a File");
-        fileChooser.setFileFilter(new FileTypeFilter(".xml","XML File"));
+        fileChooser.setFileFilter(new FileTypeFilter(".csv","CSV File"));
         int result = fileChooser.showSaveDialog(null);
         if (result == JFileChooser.APPROVE_OPTION){
             File saveFile = fileChooser.getSelectedFile();
             try{
                 FileWriter fileWriter = new FileWriter(saveFile.getPath());
-                String content = "test";
-                fileWriter.write(content);
+                String format = PERSON_SAVE_FORMAT+"\n";
+                fileWriter.write(format);
                 fileWriter.flush();
+                List<String> personIds = mLibrary.getAllPersonIds();
+                for (String personId :personIds){
+                    Person person = mLibrary.getPerson(personId);
+                    fileWriter.write(personId+", ");
+                    fileWriter.write(person.toString()+"\n");
+                    fileWriter.flush();
+                }
+                format = ITEM_SAVE_FORMAT+"\n";
+                fileWriter.write(format);
+                fileWriter.flush();
+                List<String> itemIds = mLibrary.getAllItemIds();
+                for (String itemId :itemIds){
+                    LibraryItem item = mLibrary.getItem(itemId);
+                    fileWriter.write(item.getClass().getSimpleName().toString()+", ");
+                    fileWriter.write(itemId+", ");
+                    fileWriter.write(">>> "+item.toString()+" <<<, ");
+                    fileWriter.write(mLibrary.getPersonIdForItem(itemId)+"\n");
+                    fileWriter.flush();
+                }                
                 fileWriter.close();
             }catch(Exception ex){
                 errorBox(ex.getMessage(), "Ooops... an Exception Occurred!");
@@ -441,23 +465,39 @@ public class SerapeumLibraryUI extends javax.swing.JFrame {
     }//GEN-LAST:event_info1TextFieldActionPerformed
 
     private void openMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_openMenuItemActionPerformed
+        mLibrary = new Library();
+        enableGuiElements();
+        itemModel.removeAllElements();
+        personModel.removeAllElements();
+        
         JFileChooser fileChooser = new JFileChooser(new File("e:\\Dokumente\\NetBeansProjects\\"));
         fileChooser.setDialogTitle("Open an existing library");
-        fileChooser.setFileFilter(new FileTypeFilter(".xml","XML File"));
+        fileChooser.setFileFilter(new FileTypeFilter(".csv","CSV File"));
         int result = fileChooser.showOpenDialog(null);
         if (result == JFileChooser.APPROVE_OPTION){
             try{
                 File openFile = fileChooser.getSelectedFile();
                 BufferedReader br = new BufferedReader(new FileReader(openFile.getPath()));
-                String s = "";
-                while ((s = br.readLine()) != null){
-                    System.out.println(s);
+                String line = "";
+                while ((line = br.readLine()) != null){
+                    if (line.equals(PERSON_SAVE_FORMAT)){
+                        //alright, get the next line
+                    } else if (line.equals(ITEM_SAVE_FORMAT)){
+                        break;
+                    } else {
+                        String id = mLibrary.rebuildPerson(line);
+                        personModel.addElement("<ID:"+ id +"> "+mLibrary.getPerson(id).toString());
+                    }                    
+                }
+                while ((line = br.readLine()) != null){
+                    String id = mLibrary.rebuildItem(line);
+                    itemModel.addElement("<ID:"+ id +"> "+mLibrary.getItem(id).toString());
                 }
                 if (br!=null){
                     br.close();
                 }
-            }catch(Exception ex){
-                errorBox(ex.getMessage(), "Ooops... an Exception Occurred!");
+            }catch(IOException ex){
+                errorBox(ex.getLocalizedMessage(), "Ooops... an Exception Occurred!");
             }
         }
     }//GEN-LAST:event_openMenuItemActionPerformed

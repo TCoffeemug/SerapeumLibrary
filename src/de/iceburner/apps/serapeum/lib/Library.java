@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Library class
@@ -169,5 +171,142 @@ public class Library {
         List<String> itemIds = new ArrayList();
         itemIds.addAll(mLibraryItems.keySet());
         return itemIds;
+    }
+
+    /**
+     * 
+     * @return List<String> - a list of all person IDs
+     */
+    public List<String> getAllPersonIds() {
+        List<String> personIds = new ArrayList();
+        personIds.addAll(mPersons.keySet());
+        return personIds;
+    }
+
+    /**
+     * 
+     * @param line - parsed line from save file to rebuild person
+     * @return String - id of the rebuild person
+     */
+    public String rebuildPerson(String line) {
+        Pattern idPattern = Pattern.compile("[A-Z,a-z, ]{4}[0-9]{3}");
+        Pattern namePattern = Pattern.compile(",[A-Z,a-z, ]+[,]");
+        Pattern mailPattern = Pattern.compile(", email: .+,");
+        Pattern phonePattern = Pattern.compile(", phone: .+");
+        
+        String personId = "";        
+        Matcher matcher = idPattern.matcher(line);
+        if (matcher.find())
+        {
+            personId = matcher.group(0);
+        }
+        
+        String name = "";
+        matcher = namePattern.matcher(line);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            name = match.substring(2, match.length()-1);
+        } else {
+            namePattern = Pattern.compile(",[A-Z,a-z, ]+$");
+            matcher = namePattern.matcher(line);
+            if (matcher.find())
+            {
+                String match = matcher.group(0);
+                name = match.substring(1);
+            }
+        }
+        Person person = new Person(name);        
+        
+        matcher = mailPattern.matcher(line);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            person.setMail(match.substring(9, match.length()-1));
+        }
+        
+        matcher = phonePattern.matcher(line);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            person.setPhone(match.substring(9, match.length()));
+        }
+        
+        mPersons.put(personId, person);
+        return personId;
+    }
+
+    /**
+     * 
+     * @param line - parsed line from save file to rebuild item
+     * @return String - Id of the rebuild item 
+     */
+    public String rebuildItem(String line) {
+        Pattern idPattern = Pattern.compile("[A-Z,a-z, ]{4}[0-9]{3}");
+        Pattern objectPattern = Pattern.compile(">>>(.+)<<<");
+        
+        String itemId = "";
+        String personId = "";        
+        Matcher matcher = idPattern.matcher(line);
+        if (matcher.find())
+        {
+            itemId = matcher.group(0);
+        }
+        if (matcher.find())
+        {
+            personId = matcher.group(0);
+        }        
+        
+        String object = "";
+        matcher = objectPattern.matcher(line);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            object = match.substring(2, match.length()-1);
+        }
+        
+        String name = "";
+        Pattern namePattern = Pattern.compile(">>>[A-Z,a-z, ]+[,(:]");
+        String info = "";
+        Pattern infoPattern = Pattern.compile("[ (][A-Z,a-z,0-9]*[:)]");
+        String description = "";
+        Pattern descriptionPattern = Pattern.compile("[:|][A-Z,a-z, ]+<<<");
+        
+        matcher = namePattern.matcher(object);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            name = match.substring(2, match.length()-1);
+        }
+        
+        matcher = infoPattern.matcher(object);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            info = match.substring(1, match.length()-1);
+        }
+        
+        LibraryItemFactory.ItemType type = LibraryItemFactory.ItemType.OTHER;
+        if (line.startsWith("Movie")){
+            type = LibraryItemFactory.ItemType.MOVIE;
+        } else if (line.startsWith("LibraryItem")){
+            type = LibraryItemFactory.ItemType.OTHER;
+        }
+        
+        LibraryItem item = LibraryItemFactory.createItem(name, info, type);
+        
+        matcher = descriptionPattern.matcher(object);
+        if (matcher.find())
+        {
+            String match = matcher.group(0);
+            description = match.substring(2, match.length()-1);
+            item.setDescription(description);
+        }
+        
+        mLibraryItems.put(itemId, item);
+        if (!personId.isEmpty()){
+            checkOut(itemId, personId);            
+        }
+        return itemId;
     }
 }
